@@ -5,9 +5,10 @@ use <BOSL/masks.scad>
 use <BOSL/constants.scad>
 use <BOSL/metric_screws.scad>
 
-// # debug draw
-// * ignore
-// ! isolate
+// % render debug only
+// # also debug render
+// * ignore everything
+// ! isolate and render
 
 $fa = 1;
 // model resolution (lower the better)
@@ -15,23 +16,14 @@ $fs = .1;
 // fragment resolution (higher the better)
 $fn = 20;
 
+floor_z = -9.51;
+
 // bottom right fillet
 module br_filleted_cube(size, r=25) {
     difference() {
         cube(size, center=true);
         translate([size[0]/2, -size[1]/2, -2.5])
-            interior_fillet(l=size[2]+5, r=r, orient=ORIENT_Z_90);
-    }
-}
-
-module gb_corner_mask(target_size, diameter, center=true) {
-    translate([
-        -target_size[0] / 2, 
-        -target_size[1] / 2])
-    difference() {
-        cube([diameter, diameter, target_size[2] + .02], center);
-        translate([-diameter / 2, -diameter / 2, -target_size[2] / 2 - .02])
-            cylinder(h=target_size[2] + .02 + .02, d=diameter);
+            interior_fillet(l=size[2]+5.2, r=r, orient=ORIENT_Z_90);
     }
 }
 
@@ -42,15 +34,26 @@ module rounded_cube(size, diameter, center=false) {
     }
 }
 
-difference() {
-    bottom_half(s=200)
-    color("DarkSlateGray")
-        rounded_cube([105, 170, 25], 7.5, center=true);
-    // 3mm walls
-    // 3x1mm interior wall
-    br_filleted_cube([99, 164, 19]);
-    br_filleted_cube([100, 165, 6]);
+module onoffswitch_hole() {
+    // on-off switch dimensions
+    %cube([6, 13, 6]);
+    #translate([-3, 6.5, 3])
+        cube([6, 7, 5], center=true);
 }
 
+union() {
+    difference() {
+        bottom_half(s=200)
+        color("DarkSlateGray")
+            rounded_cube([105, 170, 25], 7.5, center=true);
+        // 3.5 x 3.5 x 3mm walls
+        // 1mm additional interior walls
+        br_filleted_cube([98, 163, 19]);
+        br_filleted_cube([100, 165, 6]);
+
+        translate([-49, 15, floor_z])
+            onoffswitch_hole();
+    }
+}
 
 
