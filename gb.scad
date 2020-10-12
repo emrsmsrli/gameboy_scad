@@ -44,6 +44,12 @@ module onoffswitch_hole() {
         cube([6, 7, 4]);
 }
 
+module bolt(size, x = 0, y = 0) {
+    translate([x, y, screw_z])
+    rotate(180, [1, 0, 0])
+        metric_bolt(headtype="round", size=size, details=false, coarse=false);
+}
+
 union() {
     difference() {
         bottom_half(s=200)
@@ -54,16 +60,33 @@ union() {
         br_filleted_cube([98, 163, 19]);
         br_filleted_cube([100, 165, 6.5]);
 
-        #translate([-50, 15, floor_z])
+        #translate([-50, 0, floor_z])
             onoffswitch_hole();
+
+        // m3 bolts 
+        *union() {
+            bolt(size=3, x=-40, y=-5);
+            bolt(size=3, x=40, y=-5);
+            bolt(size=3, x=-40, y=-55);
+            bolt(size=3, x=40, y=-55);
+        }
+
+        // m2.5 bolts 
+        *union() {
+            bolt(size=2.5, x=-52.5 + 8 + 3.5, y=85 - 10 - 56 + 3.5);
+            bolt(size=2.5, x=-52.5 + 8 + 3.5 + 58, y=85 - 10 - 56 + 3.5 + 49);
+        }
     }
+
+    // rpi
+    %translate([-52.5 + 8, 85 - 10 - 56, floor_z])
+        cube([65, 56, 1]);
     
     // todo on-off switch cover
     // todo stands 
     //  - 3.5mm jack
     //  - regulator
     //  - charger
-    //  - on-off switch(1mm)
     // todo button holders
 }
 
