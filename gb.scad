@@ -56,7 +56,7 @@ module bolt(size, x = 0, y = 0) {
         //#metric_bolt(headtype="round", size=size, details=false, coarse=false);
 }
 
-module rpi_bolt(h, d, x=0, y=0) {
+module bolt_stand(h, d, x=0, y=0) {
     translate([x, y, floor_z])
         cylinder(h=h + .01, d=d + 1);
 }
@@ -87,22 +87,10 @@ difference() {
 
         // m2.5 stands 
         union() {
-            // bl
-            rpi_bolt(h=1, d=2.5,
-                x=rpi_base_x + 3.5,
-                y=rpi_base_y + 3.5);
-            // tl
-            rpi_bolt(h=1, d=2.5,
-                x=rpi_base_x + 3.5,
-                y=rpi_base_y - 3.5 + rpi_h);
-            // br
-            rpi_bolt(h=1, d=2.5, 
-                x=rpi_base_x - 3.5 + rpi_w,
-                y=rpi_base_y + 3.5);
-            // tr
-            rpi_bolt(h=1, d=2.5, 
-                x=rpi_base_x - 3.5 + rpi_w,
-                y=rpi_base_y - 3.5 + rpi_h);
+            bolt_stand(h=1, d=2.5, x=rpi_base_x + 3.5, y=rpi_base_y + 3.5);
+            bolt_stand(h=1, d=2.5, x=rpi_base_x + 3.5, y=rpi_base_y - 3.5 + rpi_h);
+            bolt_stand(h=1, d=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y + 3.5);
+            bolt_stand(h=1, d=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y - 3.5 + rpi_h);
         }
     }
 
@@ -127,11 +115,15 @@ difference() {
 }
 
 // todo on-off switch cover
+// todo 3.5mm jack hole
+// todo charger hole
 // todo stands 
 //  - 3.5mm jack
 //  - regulator
 //  - charger
 // todo button holders
+// todo lcd screen hole
+// todo button holes
 
 // rpi + bolt_h + walls 
 // 23 + 4 = 27
