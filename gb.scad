@@ -16,8 +16,13 @@ $fs = .1;
 // fragment resolution (higher the better)
 $fn = 20;
 
-floor_z = -9.51;
-screw_z = -11.5;
+floor_z = -13.01;
+screw_z = -14;
+
+rpi_base_x = -44.5;
+rpi_base_y = 19;
+rpi_h = 56;
+rpi_w = 65;
 
 // bottom right fillet
 module br_filleted_cube(size, r=25) {
@@ -28,7 +33,7 @@ module br_filleted_cube(size, r=25) {
     }
 }
 
-module rounded_cube(size, diameter, center=false) {
+module rounded_cube(size, diameter) {
     minkowski() {
         br_filleted_cube([size[0] - diameter, size[1] - diameter, size[2] - diameter]);
         sphere(d=diameter);
@@ -47,47 +52,88 @@ module onoffswitch_hole() {
 module bolt(size, x = 0, y = 0) {
     translate([x, y, screw_z])
     rotate(180, [1, 0, 0])
-        metric_bolt(headtype="round", size=size, details=false, coarse=false);
+        cylinder(d=size, h=10, center=true);
+        //#metric_bolt(headtype="round", size=size, details=false, coarse=false);
 }
 
-union() {
+module rpi_bolt(h, d, x=0, y=0) {
+    translate([x, y, floor_z])
+        cylinder(h=h + .01, d=d + 1);
+}
+
+module gb_base() {
     difference() {
-        bottom_half(s=200)
+       bottom_half(s=200)
         color("DarkSlateGray")
-            rounded_cube([105, 170, 25], 7.5, center=true);
-        // 3.5 x 3.5 x 3mm walls
+            rounded_cube([105, 170, 30], 7.5);
+        // 3.5 x 3.5 x 2mm walls
         // 1mm additional interior walls
-        br_filleted_cube([98, 163, 19]);
+        br_filleted_cube([98, 163, 26]);
         br_filleted_cube([100, 165, 6.5]);
+    }
+}
 
-        #translate([-50, 0, floor_z])
-            onoffswitch_hole();
+difference() {
+    union() {
+        gb_base();
 
-        // m3 bolts 
-        *union() {
-            bolt(size=3, x=-40, y=-5);
-            bolt(size=3, x=40, y=-5);
-            bolt(size=3, x=-40, y=-55);
-            bolt(size=3, x=40, y=-55);
-        }
+        rpi_pos = [rpi_base_x, rpi_base_y, floor_z];
+        // rpi
+        *%translate(rpi_pos)
+            cube([rpi_w, rpi_h, 1]);
+        // rpi+lcd
+        *%translate(rpi_pos)
+            cube([84, rpi_h, 25]);
 
-        // m2.5 bolts 
-        *union() {
-            bolt(size=2.5, x=-52.5 + 8 + 3.5, y=85 - 10 - 56 + 3.5);
-            bolt(size=2.5, x=-52.5 + 8 + 3.5 + 58, y=85 - 10 - 56 + 3.5 + 49);
+        // m2.5 stands 
+        union() {
+            // bl
+            rpi_bolt(h=1, d=2.5,
+                x=rpi_base_x + 3.5,
+                y=rpi_base_y + 3.5);
+            // tl
+            rpi_bolt(h=1, d=2.5,
+                x=rpi_base_x + 3.5,
+                y=rpi_base_y - 3.5 + rpi_h);
+            // br
+            rpi_bolt(h=1, d=2.5, 
+                x=rpi_base_x - 3.5 + rpi_w,
+                y=rpi_base_y + 3.5);
+            // tr
+            rpi_bolt(h=1, d=2.5, 
+                x=rpi_base_x - 3.5 + rpi_w,
+                y=rpi_base_y - 3.5 + rpi_h);
         }
     }
 
-    // rpi
-    %translate([-52.5 + 8, 85 - 10 - 56, floor_z])
-        cube([65, 56, 1]);
-    
-    // todo on-off switch cover
-    // todo stands 
-    //  - 3.5mm jack
-    //  - regulator
-    //  - charger
-    // todo button holders
+    #translate([-50, -2, -9.5])
+        onoffswitch_hole();
+
+    // m3 bolts 
+    union() {
+        bolt(size=3, x=-40, y=-10);
+        bolt(size=3, x=40, y=-5);
+        bolt(size=3, x=-40, y=-55);
+        bolt(size=3, x=40, y=-55);
+    }
+
+    // m2.5 bolts 
+    union() {            
+        bolt(size=2.5, x=rpi_base_x + 3.5, y=rpi_base_y + 3.5);
+        bolt(size=2.5, x=rpi_base_x + 3.5, y=rpi_base_y - 3.5 + rpi_h);
+        bolt(size=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y + 3.5);
+        bolt(size=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y - 3.5 + rpi_h);
+    }
 }
+
+// todo on-off switch cover
+// todo stands 
+//  - 3.5mm jack
+//  - regulator
+//  - charger
+// todo button holders
+
+// rpi + bolt_h + walls 
+// 23 + 4 = 27
 
 
