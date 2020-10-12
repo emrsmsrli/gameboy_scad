@@ -17,6 +17,7 @@ $fs = .1;
 $fn = 20;
 
 floor_z = -9.51;
+screw_z = -11.5;
 
 // bottom right fillet
 module br_filleted_cube(size, r=25) {
@@ -35,10 +36,12 @@ module rounded_cube(size, diameter, center=false) {
 }
 
 module onoffswitch_hole() {
-    // on-off switch dimensions
-    %cube([6, 13, 6]);
-    #translate([-3, 6.5, 3])
-        cube([6, 7, 5], center=true);
+    // z is actually 6mm
+    // other side of the gb 
+    // should pin the switch here
+    cube([6, 13, 7]);
+    translate([-6, 3, 1])
+        cube([6, 7, 4]);
 }
 
 union() {
@@ -49,9 +52,9 @@ union() {
         // 3.5 x 3.5 x 3mm walls
         // 1mm additional interior walls
         br_filleted_cube([98, 163, 19]);
-        br_filleted_cube([100, 165, 6]);
+        br_filleted_cube([100, 165, 6.5]);
 
-        translate([-49, 15, floor_z])
+        #translate([-50, 15, floor_z])
             onoffswitch_hole();
     }
 }
