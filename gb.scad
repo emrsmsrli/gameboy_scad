@@ -57,6 +57,14 @@ union() {
         #translate([-50, 15, floor_z])
             onoffswitch_hole();
     }
+    
+    // todo on-off switch cover
+    // todo stands 
+    //  - 3.5mm jack
+    //  - regulator
+    //  - charger
+    //  - on-off switch(1mm)
+    // todo button holders
 }
 
 
