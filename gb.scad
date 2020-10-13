@@ -64,7 +64,7 @@ module typec_hole() {
     }
 }
 
-module bolt(size, x = 0, y = 0) {
+module bolt(size, x=0, y=0) {
     translate([x, y, screw_z])
     rotate(180, [1, 0, 0])
         cylinder(d=size, h=10, center=true);
