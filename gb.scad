@@ -49,6 +49,16 @@ module onoffswitch_hole() {
         cube([6, 7, 4]);
 }
 
+module typec_hole() {
+    difference() {
+        cube([4, 10, 4]);
+        translate([2, 0, 0]) fillet_mask_x(l=4, r=1);
+        translate([2, 10, 0]) fillet_mask_x(l=4, r=1);
+        translate([2, 10, 4]) fillet_mask_x(l=4, r=1);
+        translate([2, 0, 4]) fillet_mask_x(l=4, r=1);
+    }
+}
+
 module bolt(size, x = 0, y = 0) {
     translate([x, y, screw_z])
     rotate(180, [1, 0, 0])
@@ -63,7 +73,7 @@ module bolt_stand(h, d, x=0, y=0) {
 
 module gb_base() {
     difference() {
-       bottom_half(s=200)
+        bottom_half(s=200)
         color("DarkSlateGray")
             rounded_cube([105, 170, 30], 7.5);
         // 3.5 x 3.5 x 2mm walls
@@ -85,6 +95,10 @@ difference() {
         *%translate(rpi_pos)
             cube([84, rpi_h, 25]);
 
+        // typec stand
+        translate([28, -35, floor_z])
+            cube([16, 12, 1]);
+
         // m2.5 stands 
         union() {
             bolt_stand(h=1, d=2.5, x=rpi_base_x + 3.5, y=rpi_base_y + 3.5);
@@ -96,6 +110,9 @@ difference() {
 
     #translate([-50, -2, -9.5])
         onoffswitch_hole();
+
+    translate([48.5, -35, -11])
+        typec_hole();
 
     // m3 bolts 
     union() {
@@ -116,14 +133,13 @@ difference() {
 
 // todo on-off switch cover
 // todo 3.5mm jack hole
-// todo charger hole
 // todo stands 
 //  - 3.5mm jack
 //  - regulator
-//  - charger
 // todo button holders
 // todo lcd screen hole
 // todo button holes
+// todo add back buttons
 
 // rpi + bolt_h + walls 
 // 23 + 4 = 27
