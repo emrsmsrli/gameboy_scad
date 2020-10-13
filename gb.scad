@@ -49,6 +49,11 @@ module onoffswitch_hole() {
         cube([6, 7, 4]);
 }
 
+module audio_jack() {
+    rotate(90, [1, 0, 0])
+        cylinder(d=6, h=4);
+}
+
 module typec_hole() {
     difference() {
         cube([4, 10, 4]);
@@ -94,10 +99,17 @@ difference() {
         // rpi+lcd
         *%translate(rpi_pos)
             cube([84, rpi_h, 25]);
+        // battery
+        *%translate([-48, -80, floor_z])
+            cube([75, 23, 20]);
 
         // typec stand (5mm gap to wall)
         translate([28, -35, floor_z])
             cube([16, 12, 1]);
+
+        // audio jack stand (originally 2 mm from floor)
+        translate([26, 70, floor_z])
+            cube([8, 10, 1]);
 
         // m2.5 stands 
         union() {
@@ -111,14 +123,17 @@ difference() {
     #translate([-50, -2, -9.5])
         onoffswitch_hole();
 
-    translate([48.5, -35, -11.5])
+    translate([48.6, -35, -11.5])
         typec_hole();
+
+    translate([30, 170 / 2 + .1, floor_z + 5])
+        audio_jack();
 
     // m3 bolts 
     union() {
         bolt(size=3, x=-40, y=-10);
         bolt(size=3, x=40, y=-5);
-        bolt(size=3, x=-40, y=-55);
+        bolt(size=3, x=-40, y=-50);
         bolt(size=3, x=40, y=-55);
     }
 
@@ -132,16 +147,11 @@ difference() {
 }
 
 // todo on-off switch cover
-// todo 3.5mm jack hole
-// todo stands 
-//  - 3.5mm jack
+// todo stands
 //  - regulator
 // todo button holders
 // todo lcd screen hole
 // todo button holes
 // todo add back buttons
-
-// rpi + bolt_h + walls 
-// 23 + 4 = 27
 
 
