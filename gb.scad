@@ -95,7 +95,7 @@ difference() {
         *%translate(rpi_pos)
             cube([84, rpi_h, 25]);
 
-        // typec stand
+        // typec stand (5mm gap to wall)
         translate([28, -35, floor_z])
             cube([16, 12, 1]);
 
@@ -111,7 +111,7 @@ difference() {
     #translate([-50, -2, -9.5])
         onoffswitch_hole();
 
-    translate([48.5, -35, -11])
+    translate([48.5, -35, -11.5])
         typec_hole();
 
     // m3 bolts 
