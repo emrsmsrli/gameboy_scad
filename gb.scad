@@ -33,6 +33,18 @@ module br_filleted_cube(size, r=25) {
     }
 }
 
+module br_interior_filleted_cube(size, r=25, interior_fillet_r=2.5) {
+    difference() {
+        br_filleted_cube(size);
+        translate([size[0]/2, size[1]/2])
+            interior_fillet(l=size[2], r=interior_fillet_r, orient=ORIENT_Z_180);
+        translate([-size[0]/2, -size[1]/2])
+            interior_fillet(l=size[2], r=interior_fillet_r, orient=ORIENT_Z);
+        translate([-size[0]/2, size[1]/2])
+            interior_fillet(l=size[2], r=interior_fillet_r, orient=ORIENT_Z_270);
+    }
+}
+
 module rounded_cube(size, diameter) {
     minkowski() {
         br_filleted_cube([size[0] - diameter, size[1] - diameter, size[2] - diameter]);
@@ -81,10 +93,11 @@ module gb_base() {
         bottom_half(s=200)
         color("DarkSlateGray")
             rounded_cube([105, 170, 30], 7.5);
+        
         // 3.5 x 3.5 x 2mm walls
         // 1mm additional interior walls
-        br_filleted_cube([98, 163, 26]);
-        br_filleted_cube([100, 165, 6.5]);
+        br_interior_filleted_cube([98, 163, 26]);
+        br_interior_filleted_cube([100, 165, 6.5]);
     }
 }
 
