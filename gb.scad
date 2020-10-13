@@ -35,7 +35,7 @@ module br_filleted_cube(size, r=25) {
 
 module br_interior_filleted_cube(size, r=25, interior_fillet_r=2.5) {
     difference() {
-        br_filleted_cube(size);
+        br_filleted_cube(size, r);
         translate([size[0]/2, size[1]/2])
             interior_fillet(l=size[2], r=interior_fillet_r, orient=ORIENT_Z_180);
         translate([-size[0]/2, -size[1]/2])
@@ -93,11 +93,11 @@ module gb_base() {
         bottom_half(s=200)
         color("DarkSlateGray")
             rounded_cube([105, 170, 30], 7.5);
-        
-        // 3.5 x 3.5 x 2mm walls
-        // 1mm additional interior walls
-        br_interior_filleted_cube([98, 163, 26]);
-        br_interior_filleted_cube([100, 165, 6.5]);
+
+        // 2x2x2mm walls
+        // 1x2mm additional interior walls
+        br_interior_filleted_cube([101, 166, 26], r=27);
+        br_interior_filleted_cube([103, 168, 4], r=28);
     }
 }
 
@@ -117,11 +117,11 @@ difference() {
             cube([75, 23, 20]);
 
         // typec stand (5mm gap to wall)
-        translate([28, -35, floor_z])
+        translate([30, -36, floor_z])
             cube([16, 12, 1]);
 
         // audio jack stand (originally 2 mm from floor)
-        translate([26, 70, floor_z])
+        translate([26, 71, floor_z])
             cube([8, 10, 1]);
 
         // m2.5 stands 
@@ -133,13 +133,13 @@ difference() {
         }
     }
 
-    #translate([-50, -2, -9.5])
+    translate([-50.5 + .01, -2, -9.5])
         onoffswitch_hole();
 
-    translate([48.6, -35, -11.5])
+    translate([49.6, -35, -11.5])
         typec_hole();
 
-    translate([30, 170 / 2 + .1, floor_z + 5])
+    translate([30, 170 / 2 + .5, floor_z + 5])
         audio_jack();
 
     // m3 bolts 
