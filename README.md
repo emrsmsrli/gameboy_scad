@@ -1,7 +1,8 @@
 # gameboySCAD
 
-An OpenSCAD project that tries to construct a 3D copy of the original Gameboy.
-The model also features a custom back buttons that emulate Gameboy Advance LR buttons.
+An OpenSCAD project that tries to construct a copy of the original Gameboy for 3D printing.
+The model also features custom back buttons that emulate Gameboy Advance LR buttons.
+Used by the awesome [gameboi](https://github.com/emrsmsrli/gameboi) and [gameboiadvance](https://github.com/emrsmsrli/gameboiadvance) projects.
 
 <p align="center">
     <img src="screenshots/viewport.jpg" width=750 />
