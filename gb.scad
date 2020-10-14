@@ -285,7 +285,7 @@ difference() {
         translate([-44.5, -4, -2.5]) rotate(270, [1,0,0]) right_triangle([2, 7, 3]);
         translate([-50.5, -4, floor_z]) cube([1, 17, 3.51]);
         translate([-47.5, -4, floor_z]) cube([1, 17, 3.51]);
-        translate([-44.5, -4, floor_z]) cube([1, 17, 3.51]);
+        translate([-44.5, -4, floor_z]) cube([1, 17, 3.5]);
 
         // buttons & holders
         union() {
