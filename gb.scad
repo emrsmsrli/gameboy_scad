@@ -347,8 +347,8 @@ difference() {
 
     // m3 bolts 
     union() {
-        bolt(size=3, x=-40, y=-10);
-        bolt(size=3, x=40, y=-5);
+        bolt(size=3, x=-46, y=79);
+        bolt(size=3, x=46, y=79);
         bolt(size=3, x=-40, y=-50);
         bolt(size=3, x=40, y=-55);
     }
@@ -364,6 +364,6 @@ difference() {
 
 // todo lcd screen hole
 // todo button holes
-// todo fix middle m3 screw positions
+// todo screw holes for front side
 
 
