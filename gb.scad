@@ -251,23 +251,31 @@ module back_button_holder() {
     }
 }
 
-module gb_base() {
+module gb_base(is_bottom) {
     difference() {
-        bottom_half(s=200)
-//        front_half(s=200)
-        color("DarkSlateGray")
-            br_filleted_rounded_cube([105, 170, 30], 7.5);
+        union() {
+            bottom_half(s=200)
+//            front_half(s=200)
+            color("DarkSlateGray")
+                br_filleted_rounded_cube([105, 170, 30], 7.5);
+
+            if(!is_bottom) {
+                br_interior_filleted_cube([103, 168, 3], r=28);
+            }
+        }
 
         // 2x2x2mm walls
         // 1x2mm additional interior walls
         br_filleted_rounded_cube([101, 166, 26], 2.5);
-        br_interior_filleted_cube([103, 168, 4], r=28);
+        if(is_bottom) {
+            br_interior_filleted_cube([103, 168, 4], r=28);
+        }
     }
 }
 
 *difference() {
     union() {
-        gb_base();
+        gb_base(true);
 
         rpi_pos = [rpi_base_x, rpi_base_y, floor_z];
         // rpi
@@ -372,7 +380,7 @@ module gb_base() {
 
 difference() {
     mirror([1, 0, 0])
-        gb_base();
+        gb_base(false);
 
     union() {
         translate([0, 75 - 55 / 2, floor_z]) cube([79, 55, 4], center=true);
@@ -402,6 +410,3 @@ difference() {
 
 // todo button holes
 // todo screw holes for front side
-// todo 1x2mm additional interior wall for upper half
-
-
