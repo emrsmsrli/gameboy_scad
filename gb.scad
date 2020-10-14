@@ -278,6 +278,15 @@ difference() {
         translate([0, 9, -20.99])
             back_button_holder();
 
+        // on-off holder
+        translate([-50.5, -4, -9.5]) cube([6, 2, 7]);
+        translate([-50.5, 11, -9.5]) cube([6, 2, 7]);
+        translate([-44.5, 13, -9.5]) rotate(90, [1,0,0]) right_triangle([2, 7, 3]);
+        translate([-44.5, -4, -2.5]) rotate(270, [1,0,0]) right_triangle([2, 7, 3]);
+        translate([-50.5, -4, floor_z]) cube([1, 17, 4]);
+        translate([-47.5, -4, floor_z]) cube([1, 17, 4]);
+        translate([-44.5, -4, floor_z]) cube([1, 17, 4]);
+
         // buttons & holders
         union() {
             // buttons
@@ -353,7 +362,6 @@ difference() {
     }
 }
 
-// todo on-off switch cover
 // todo lcd screen hole
 // todo button holes
 // todo fix middle m3 screw positions
