@@ -27,6 +27,14 @@ rpi_w = 65;
 button_holder_x_offset = 25.5;
 button_holder_total_height = 21;
 
+module cube_corner_mask(r) {
+    difference() {
+        cube(r, center=true);
+        translate([r/2, 0, r/2]) ycyl(r=r,h=r);
+        translate([0, r/2, r/2]) xcyl(r=r,h=r);
+    }
+}
+
 // bottom right fillet
 module br_filleted_cube(size, r=25) {
     difference() {
@@ -257,7 +265,7 @@ module gb_base() {
     }
 }
 
-difference() {
+*difference() {
     union() {
         gb_base();
 
@@ -362,8 +370,38 @@ difference() {
     }
 }
 
-// todo lcd screen hole
+difference() {
+    mirror([1, 0, 0])
+        gb_base();
+
+    union() {
+        translate([0, 75 - 55 / 2, floor_z]) cube([79, 55, 4], center=true);
+
+        translate([0, 75 - 55, floor_z - 2]) fillet_mask_x(l=79, r=2);
+        translate([0, 75, floor_z - 2]) fillet_mask_x(l=79, r=2);
+        translate([79 / 2, 75 - 55 / 2, floor_z - 2]) fillet_mask_y(l=55, r=2);
+        translate([-79 / 2, 75 - 55 / 2, floor_z - 2]) fillet_mask_y(l=55, r=2);
+        
+        translate([-79 / 2 - 1, 75 - 55 - 1, floor_z - 1])
+        rotate(180, [0, 0, 1])
+            cube_corner_mask(2);
+
+        translate([+79 / 2 + 1, 75 - 55 - 1, floor_z - 1])
+        rotate(270, [0, 0, 1])
+            cube_corner_mask(2);
+
+        translate([+79 / 2 + 1, 75 + 1, floor_z - 1])
+        rotate(0, [0, 0, 1])
+            cube_corner_mask(2);
+
+        translate([-79 / 2 - 1, 75 + 1, floor_z - 1])
+        rotate(90, [0, 0, 1])
+            cube_corner_mask(2);
+    }
+}
+
 // todo button holes
 // todo screw holes for front side
+// todo 1x2mm additional interior wall for upper half
 
 
