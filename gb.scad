@@ -48,7 +48,7 @@ module br_interior_filleted_cube(size, r=25, interior_fillet_r=2.5) {
     }
 }
 
-module rounded_cube(size, diameter) {
+module br_filleted_rounded_cube(size, diameter) {
     minkowski() {
         br_filleted_cube([size[0] - diameter, size[1] - diameter, size[2] - diameter]);
         sphere(d=diameter);
@@ -186,16 +186,73 @@ module bolt_stand(h, d, x=0, y=0) {
         cylinder(h=h + .01, d=d + 1);
 }
 
+module push_button(base=6, h=1) {
+    rotate(270, [1, 0, 0])
+    union() {
+        translate([0, 0, 1.75]) cube([base, base, 3.5], center=true);
+        translate([0, 0, 3.5]) cylinder(d=3, h=h);
+    }
+}
+
+module push_button_socket(depth=3) {
+    translate([-4, -4, -3]) cube([1, depth, 9]);
+    translate([3, -4, -3]) cube([1, depth, 9]);
+    translate([-4, -4, -3]) cube([8, depth, 1]);
+}
+
+module back_button() {
+    h = 4;
+    union() {
+        difference() {
+            union() {
+                 translate([-10, 0, -4]) cube([20, 1, 8]);
+                 translate([0, 3, 0]) cuboid([18, h, 8], fillet=1.5, edges=EDGES_BACK);
+            }
+            translate([-8, 0, -3]) cube([16, h, 6]);
+        }
+        difference() {
+            rotate(90, [1, 0, 0]) translate([0, 0, -h]) cylinder(d=3, h=h);
+            rotate(90, [1, 0, 0]) translate([0, 0, -h]) cylinder(d=1, h=h);
+        }
+    }
+}
+
+module back_button_holder() {
+    *translate([0, 0, .5])
+        union() {
+            translate([-12, -4, 0]) %push_button(h=1.5);
+            translate([12, -4, 0]) %push_button(h=1.5);
+            translate([-12, 3, 0]) %back_button();
+            translate([12, 3, 0]) %back_button();
+        }
+
+    union() {
+        difference() {
+            cuboid([50, 10, 12], fillet=2, edges=EDGES_BOTTOM + EDGES_Z_ALL);
+            translate([0, 0, 2.5])
+                cuboid([44, 8, 12], fillet=0);
+
+            translate([-12, 4.5, .75]) cube([18.5, 3, 8.5], center=true);
+            translate([12, 4.5, .75]) cube([18.5, 3, 8.5], center=true);
+        }
+
+        translate([12, 0, -.5]) push_button_socket();
+        translate([-12, 0, -.5]) push_button_socket();
+        translate([1, 2, -3.5]) cube([1, 2, 9]);
+        translate([-2, 2, -3.5]) cube([1, 2, 9]);
+    }
+}
+
 module gb_base() {
     difference() {
         bottom_half(s=200)
 //        front_half(s=200)
         color("DarkSlateGray")
-            rounded_cube([105, 170, 30], 7.5);
+            br_filleted_rounded_cube([105, 170, 30], 7.5);
 
         // 2x2x2mm walls
         // 1x2mm additional interior walls
-        rounded_cube([101, 166, 26], 2.5);
+        br_filleted_rounded_cube([101, 166, 26], 2.5);
         br_interior_filleted_cube([103, 168, 4], r=28);
     }
 }
@@ -218,23 +275,27 @@ difference() {
         *%translate([-105/2, -170/2, floor_z + 26])
             cube([105, 170, 1]);
 
+        translate([0, 9, -20.99])
+            back_button_holder();
+
         // buttons & holders
         union() {
             // buttons
+            y = -10;
             *union() {
-                translate([-button_holder_x_offset, -7, floor_z + button_holder_total_height])
+                translate([-button_holder_x_offset, y, floor_z + button_holder_total_height])
                     button_dpad();
 
-                translate([button_holder_x_offset, -7, floor_z + button_holder_total_height])
+                translate([button_holder_x_offset, y, floor_z + button_holder_total_height])
                     button_a_b();
 
-                translate([0, -40, floor_z + button_holder_total_height])
+                translate([0, y - 33, floor_z + button_holder_total_height])
                     button_start_select();
             }
 
-            button_stand(-button_holder_x_offset, -7);
-            button_stand(button_holder_x_offset, -7);
-            button_stand(0, -40);
+            button_stand(-button_holder_x_offset, y);
+            button_stand(button_holder_x_offset, y);
+            button_stand(0, y - 33);
         }
 
         // stands
@@ -248,7 +309,7 @@ difference() {
                 cube([8, 10, 1]);
 
             // regulator stand
-            translate([-27, -40, floor_z])
+            translate([-27, -43, floor_z])
             rotate(30, [0, 0, 1])
                 cube([30, 14, 1]);
         }
@@ -267,6 +328,10 @@ difference() {
 
     translate([49.6, -35, -11.5])
         typec_hole();
+
+    // back button holder hole
+    translate([0, 9, -14])
+        cube([44, 8, 4], center=true);
 
     translate([30, 170 / 2 + .5, floor_z + 5])
         audio_jack();
@@ -291,7 +356,6 @@ difference() {
 // todo on-off switch cover
 // todo lcd screen hole
 // todo button holes
-// todo add back buttons
 // todo fix middle m3 screw positions
 
 
