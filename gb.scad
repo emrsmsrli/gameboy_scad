@@ -185,13 +185,19 @@ module button_start_select() {
 module bolt(size, x=0, y=0) {
     translate([x, y, screw_z])
     rotate(180, [1, 0, 0])
-        cylinder(d=size, h=10, center=true);
-        //#metric_bolt(headtype="round", size=size, details=false, coarse=false);
+        #screw(screwsize=size, screwlen=10, headlen=2, countersunk=false);
 }
 
 module bolt_stand(h, d, x=0, y=0) {
     translate([x, y, floor_z])
         cylinder(h=h + .01, d=d + 1);
+}
+
+module front_bolt_stand(x=0, y=0) {
+    difference() {
+        bolt_stand(h=11, d=4, x=x, y=y);
+        #translate([x, y, -2]) screw(screwsize=3, screwlen=7, headlen=15, countersunk=false);
+    }
 }
 
 module push_button(base=6, h=1) {
@@ -255,7 +261,6 @@ module gb_base(is_bottom) {
     difference() {
         union() {
             bottom_half(s=200)
-//            front_half(s=200)
             color("DarkSlateGray")
                 br_filleted_rounded_cube([105, 170, 30], 7.5);
 
@@ -273,11 +278,11 @@ module gb_base(is_bottom) {
     }
 }
 
-*difference() {
+difference() {
     union() {
         gb_base(true);
 
-        rpi_pos = [rpi_base_x, rpi_base_y, floor_z];
+        rpi_pos = [rpi_base_x, rpi_base_y, floor_z + 1];
         // rpi
         *%translate(rpi_pos)
             cube([rpi_w, rpi_h, 1]);
@@ -341,9 +346,9 @@ module gb_base(is_bottom) {
 
         // m2.5 stands 
         union() {
-            bolt_stand(h=1, d=2.5, x=rpi_base_x + 3.5, y=rpi_base_y + 3.5);
+            bolt_stand(h=2, d=2.5, x=rpi_base_x + 3.5, y=rpi_base_y + 3.5);
             bolt_stand(h=1, d=2.5, x=rpi_base_x + 3.5, y=rpi_base_y - 3.5 + rpi_h);
-            bolt_stand(h=1, d=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y + 3.5);
+            bolt_stand(h=2, d=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y + 3.5);
             bolt_stand(h=1, d=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y - 3.5 + rpi_h);
         }
     }
@@ -378,10 +383,9 @@ module gb_base(is_bottom) {
     }
 }
 
+rotate(180, [0, 1, 0])
 difference() {
     union() {
-        //front_half()
-        //left_half()
         mirror([1, 0, 0])
             gb_base(false);
 
@@ -399,6 +403,14 @@ difference() {
         // start-select
         translate([0, -48, floor_z + 1.5]) cube([22, 1, 3], center=true);
         translate([0, -38, floor_z + 1.5]) cube([22, 1, 3], center=true);
+
+        // m3 bolts 
+        union() {
+            front_bolt_stand(x=-46, y=79);
+            front_bolt_stand(x=46, y=79);
+            mirror([1, 0, 0]) front_bolt_stand(x=-40, y=-50);
+            mirror([1, 0, 0]) front_bolt_stand(x=40, y=-55);
+        }
     }
 
     union() {
@@ -445,5 +457,3 @@ difference() {
             cube_corner_mask(2);
     }
 }
-
-// todo screw holes for front side
