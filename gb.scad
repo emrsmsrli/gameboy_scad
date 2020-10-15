@@ -27,6 +27,13 @@ rpi_w = 65;
 button_holder_x_offset = 25.5;
 button_holder_total_height = 21;
 
+module text_3dbackfacing(t, scale=.5) {
+    rotate(180, [0, 1, 0])
+    scale([scale, scale, 1])
+    linear_extrude(1)
+        text(t, "Calibri:style=Light Italic", halign="center", valign="center");
+}
+
 module cube_corner_mask(r) {
     difference() {
         cube(r, center=true);
@@ -248,6 +255,9 @@ module back_button_holder() {
 
             translate([-12, 4.5, .75]) cube([18.5, 3, 8.5], center=true);
             translate([12, 4.5, .75]) cube([18.5, 3, 8.5], center=true);
+
+            translate([12, 0, -5.5]) text_3dbackfacing("R", .4);
+            translate([-12, 0, -5.5]) text_3dbackfacing("L", .4);
         }
 
         translate([12, 0, -.5]) push_button_socket();
@@ -278,6 +288,7 @@ module gb_base(is_bottom) {
     }
 }
 
+// bottom half
 translate([55, 0, 27])
 difference() {
     union() {
@@ -386,6 +397,7 @@ difference() {
 
 
 translate([-55, 0, 15])
+// top half
 difference() {
     union() {
         mirror([1, 0, 0])
@@ -431,6 +443,15 @@ difference() {
             translate([0, y - 33, floor_z + button_holder_total_height])
                 #button_start_select();
         }
+
+        translate([-27, -20, -14.5])
+            #text_3dbackfacing("B", .4);
+        translate([-39, -12, -14.5])
+            #text_3dbackfacing("A", .4);
+        translate([9, -49, -14.5])
+            #text_3dbackfacing("START", .3);
+        translate([-9, -49, -14.5])
+            #text_3dbackfacing("SELECT", .3);
     }
 
     // screen hole
