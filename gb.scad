@@ -278,6 +278,7 @@ module gb_base(is_bottom) {
     }
 }
 
+translate([55, 0, 27])
 difference() {
     union() {
         gb_base(true);
@@ -383,7 +384,8 @@ difference() {
     }
 }
 
-rotate(180, [0, 1, 0])
+
+translate([-55, 0, 15])
 difference() {
     union() {
         mirror([1, 0, 0])
@@ -457,3 +459,6 @@ difference() {
             cube_corner_mask(2);
     }
 }
+
+translate([-15, 95, 5]) rotate(270, [1, 0, 0]) back_button();
+translate([15, 95, 5]) rotate(270, [1, 0, 0]) back_button();
