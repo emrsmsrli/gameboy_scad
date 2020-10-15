@@ -379,9 +379,47 @@ module gb_base(is_bottom) {
 }
 
 difference() {
-    mirror([1, 0, 0])
-        gb_base(false);
+    union() {
+        //front_half()
+        //left_half()
+        mirror([1, 0, 0])
+            gb_base(false);
 
+        // a-b
+        translate([-button_holder_x_offset, -10, floor_z])
+        rotate(-30, [0, 0, 1])
+        union() {
+            translate([7.5, 0, 0]) cylinder(d=13, h=2);
+            translate([-7.5, 0, 0]) cylinder(d=13, h=2);
+        }
+
+        // dpad
+        translate([button_holder_x_offset, -10, floor_z]) cylinder(d=28, h=2);
+
+        // start-select
+        translate([0, -48, floor_z + 1.5]) cube([22, 1, 3], center=true);
+        translate([0, -38, floor_z + 1.5]) cube([22, 1, 3], center=true);
+    }
+
+    union() {
+        // buttons
+        y = -10;
+        rotate(180, [0, 1, 0])
+        union() {
+            scale([1, 1, 2])
+            translate([-button_holder_x_offset, y, floor_z + button_holder_total_height - 6.5])
+                #button_dpad();
+
+            scale([1, 1, 2])
+            translate([button_holder_x_offset, y, floor_z + button_holder_total_height - 6.5])
+                #button_a_b();
+
+            translate([0, y - 33, floor_z + button_holder_total_height])
+                #button_start_select();
+        }
+    }
+
+    // screen hole
     union() {
         translate([0, 75 - 55 / 2, floor_z]) cube([79, 55, 4], center=true);
 
@@ -408,5 +446,4 @@ difference() {
     }
 }
 
-// todo button holes
 // todo screw holes for front side
