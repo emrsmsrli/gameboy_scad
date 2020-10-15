@@ -396,8 +396,8 @@ difference() {
 }
 
 
-translate([-55, 0, 15])
 // top half
+translate([-55, 0, 15])
 difference() {
     union() {
         mirror([1, 0, 0])
