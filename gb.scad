@@ -197,7 +197,7 @@ module bolt(size, x=0, y=0) {
 
 module bolt_stand(h, d, x=0, y=0) {
     translate([x, y, floor_z])
-        cylinder(h=h + .01, d=d + 1);
+        cylinder(h=h + .01, d=d + 2);
 }
 
 module front_bolt_stand(x=0, y=0) {
@@ -227,7 +227,7 @@ module back_button() {
         difference() {
             union() {
                  translate([-10, 0, -4]) cube([20, 1, 8]);
-                 translate([0, 3, 0]) cuboid([18, h, 8], fillet=1.5, edges=EDGES_BACK);
+                 translate([0, 3, 0]) cuboid([18, h, 8], fillet=1.25, edges=EDGES_BACK);
             }
             translate([-8, 0, -3]) cube([16, h, 6]);
         }
@@ -239,17 +239,17 @@ module back_button() {
 }
 
 module back_button_holder() {
-    *translate([0, 0, .5])
-        union() {
-            translate([-12, -4, 0]) %push_button(h=1.5);
-            translate([12, -4, 0]) %push_button(h=1.5);
-            translate([-12, 3, 0]) %back_button();
-            translate([12, 3, 0]) %back_button();
-        }
+    *%translate([0, 0, .5])
+    union() {
+        translate([-12, -4, 0]) push_button(h=2);
+        translate([12, -4, 0]) push_button(h=2);
+        translate([-12, 3, 0]) back_button();
+        translate([12, 3, 0]) back_button();
+    }
 
     union() {
         difference() {
-            cuboid([50, 10, 12], fillet=2, edges=EDGES_BOTTOM + EDGES_Z_ALL);
+            cuboid([47, 10, 12], fillet=2, edges=EDGES_BOTTOM + EDGES_Z_ALL);
             translate([0, 0, 2.5])
                 cuboid([44, 8, 12], fillet=0);
 
@@ -262,8 +262,8 @@ module back_button_holder() {
 
         translate([12, 0, -.5]) push_button_socket();
         translate([-12, 0, -.5]) push_button_socket();
-        translate([1, 2, -3.5]) cube([1, 2, 9]);
-        translate([-2, 2, -3.5]) cube([1, 2, 9]);
+        translate([1, 1, -3.5]) cube([1, 3, 9]);
+        translate([-2, 1, -3.5]) cube([1, 3, 9]);
     }
 }
 
@@ -314,11 +314,11 @@ difference() {
         // on-off holder
         translate([-50.5, -4, -9.5]) cube([6, 2, 7]);
         translate([-50.5, 11, -9.5]) cube([6, 2, 7]);
-        translate([-44.5, 13, -9.5]) rotate(90, [1,0,0]) right_triangle([2, 7, 3]);
-        translate([-44.5, -4, -2.5]) rotate(270, [1,0,0]) right_triangle([2, 7, 3]);
-        translate([-50.5, -4, floor_z]) cube([1, 17, 3.51]);
-        translate([-47.5, -4, floor_z]) cube([1, 17, 3.51]);
-        translate([-44.5, -4, floor_z]) cube([1, 17, 3.5]);
+        translate([-44.5, 13, -9.5]) rotate(90, [1,0,0]) cube([2, 7, 3]);
+        translate([-44.5, -4, -2.5]) rotate(270, [1,0,0]) cube([2, 7, 3]);
+        translate([-50, -4, floor_z]) cube([1, 17, 3.51]);
+        translate([-47, -4, floor_z]) cube([1, 17, 3.51]);
+        translate([-44, -4, floor_z]) cube([1, 17, 3.5]);
 
         // buttons & holders
         union() {
@@ -344,11 +344,19 @@ difference() {
         union() {
             // typec stand (5mm gap to wall)
             translate([30, -36, floor_z])
-                cube([16, 12, 1]);
+                cube([16, 12, 1.5]);
+            *translate([22, -36, floor_z])
+                #cube([28, 12, 1.5]);
+            translate([21, -36, floor_z])
+                cube([1, 12, 4]);
 
             // audio jack stand (originally 2 mm from floor)
             translate([26, 71, floor_z])
                 cube([8, 10, 1]);
+            *translate([26, 69, floor_z])
+                #cube([8, 14, 1]);
+            translate([26, 68, floor_z])
+                cube([8, 1, 4]);
 
             // regulator stand
             translate([-27, -43, floor_z])
@@ -368,7 +376,7 @@ difference() {
     translate([-50.5 + .01, -2, -9.5])
         onoffswitch_hole();
 
-    translate([49.6, -35, -11.5])
+    translate([49.6, -35, -11])
         typec_hole();
 
     // back button holder hole
