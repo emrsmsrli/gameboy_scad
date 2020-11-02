@@ -26,6 +26,7 @@ rpi_w = 65;
 
 button_holder_x_offset = 25.5;
 button_holder_total_height = 21;
+a_b_button_half_distance = 7.5;
 
 module text_3dbackfacing(t, scale=.5) {
     rotate(180, [0, 1, 0])
@@ -75,13 +76,13 @@ module onoffswitch_hole() {
     // other side of the gb 
     // should pin the switch here
     cube([6, 13, 7]);
-    translate([-6, 3, 1])
-        cube([6, 7, 4]);
+    translate([-6, 1.5, 0])
+        cube([6, 10, 6]);
 }
 
 module audio_jack() {
     rotate(90, [1, 0, 0])
-        cylinder(d=6, h=4);
+        cylinder(d=7, h=4);
 }
 
 module typec_hole() {
@@ -107,14 +108,14 @@ module button_stand(x, y) {
     }
 }
 
-module button_dpad() {
+module button_dpad(big=false) {
     union() {
         // pcb
-        %translate([-35/2, -35/2]) cube([35, 35, 1]);
+        *%translate([-35/2, -35/2]) cube([35, 35, 1]);
 
         // conductive cover
-        %translate([0, 0, 1]) cylinder(d=30, h=2);
-        %for(angle = [0:90:270]) {
+        *%translate([0, 0, 1]) cylinder(d=30, h=2);
+        *%for(angle = [0:90:270]) {
             x = 35/4*cos(angle);
             y = 35/4*sin(angle);
             translate([x, y, 3])
@@ -122,28 +123,28 @@ module button_dpad() {
         }
 
         // button floor and buttons
-        translate([0, 0, 4]) cylinder(d=26, h=1);
-        translate([0, 0, 7]) cube([24, 8, 4], center=true);
-        translate([0, 0, 7]) cube([8, 24, 4], center=true);
+        translate([0, 0, 4]) cylinder(d=26 + (big?1:0), h=1);
+        translate([0, 0, 7]) cube([24 + (big?1:0), 8 + (big?1:0), 4], center=true);
+        translate([0, 0, 7]) cube([8 + (big?1:0), 24 + (big?1:0), 4], center=true);
     }
 }
 
-module button_a_b() {
+module button_a_b(big=false) {
     module button(dir) {
-        %translate([dir * 7.5, 0, 0]) cylinder(d=14, h=2);
-        %translate([dir * 7.5, 0, 2]) cylinder(d=6, h=4);
-        translate([dir * 7.5, 0, 3])
+        *%translate([dir * a_b_button_half_distance, 0, 0]) cylinder(d=14, h=2);
+        *%translate([dir * a_b_button_half_distance, 0, 2]) cylinder(d=6, h=4);
+        translate([dir * a_b_button_half_distance, 0, 3])
         union() {
-            cylinder(d=11, h=5);
+            cylinder(d=11 + (big?1:0), h=5);
             rotate(-30, [0, 0, 1])
-            translate([-7.5, -1])
-                cube([15, 2, 1]);
+            translate([-a_b_button_half_distance, big?-1.5:-1])
+                cube([a_b_button_half_distance*2, big?3:2, 1]);
         }
     }
 
     union() {
         // pcb
-        %translate([-35/2, -35/2]) cube([35, 35, 1]);
+        *%translate([-35/2, -35/2]) cube([35, 35, 1]);
 
         rotate(30, [0, 0, 1])
         translate([0, 0, 1])
@@ -189,10 +190,10 @@ module button_start_select() {
     }
 }
 
-module bolt(size, x=0, y=0) {
+module bolt(size, x=0, y=0, headlen=2) {
     translate([x, y, screw_z])
     rotate(180, [1, 0, 0])
-        #screw(screwsize=size, screwlen=10, headlen=2, countersunk=false);
+        #screw(screwsize=size, screwlen=10, headlen=headlen, countersunk=false);
 }
 
 module bolt_stand(h, d, x=0, y=0) {
@@ -202,8 +203,8 @@ module bolt_stand(h, d, x=0, y=0) {
 
 module front_bolt_stand(x=0, y=0) {
     difference() {
-        bolt_stand(h=11, d=4, x=x, y=y);
-        #translate([x, y, -2]) screw(screwsize=3, screwlen=7, headlen=15, countersunk=false);
+        bolt_stand(h=24, d=4, x=x, y=y);
+        #translate([x, y, 13]) screw(screwsize=3, screwlen=26, headlen=2, countersunk=false);
     }
 }
 
@@ -216,9 +217,10 @@ module push_button(base=6, h=1) {
 }
 
 module push_button_socket(depth=3) {
-    translate([-4, -4, -3]) cube([1, depth, 9]);
-    translate([3, -4, -3]) cube([1, depth, 9]);
+    translate([-4.5, -4, -3]) cube([1, depth, 9]);
+    translate([3.5, -4, -3]) cube([1, depth, 9]);
     translate([-4, -4, -3]) cube([8, depth, 1]);
+    translate([-4, -4, -2]) cube([8, 1, 8]);
 }
 
 module back_button() {
@@ -256,14 +258,18 @@ module back_button_holder() {
             translate([-12, 4.5, .75]) cube([18.5, 3, 8.5], center=true);
             translate([12, 4.5, .75]) cube([18.5, 3, 8.5], center=true);
 
-            translate([12, 0, -5.5]) text_3dbackfacing("R", .4);
-            translate([-12, 0, -5.5]) text_3dbackfacing("L", .4);
+            translate([12, 0, -5]) text_3dbackfacing("R", .4);
+            translate([-12, 0, -5]) text_3dbackfacing("L", .4);
         }
 
         translate([12, 0, -.5]) push_button_socket();
         translate([-12, 0, -.5]) push_button_socket();
-        translate([1, 1, -3.5]) cube([1, 3, 9]);
-        translate([-2, 1, -3.5]) cube([1, 3, 9]);
+
+        translate([-1, 1, -3.5]) cube([2, 3, 13]);
+        translate([-1, 4, 8]) cube([2, 2, 1.5]);
+
+        translate([-1, -4, -3.5]) cube([2, 3, 13]);
+        translate([-1, -6, 8]) cube([2, 2, 1.5]);
     }
 }
 
@@ -275,7 +281,7 @@ module gb_base(is_bottom) {
                 br_filleted_rounded_cube([105, 170, 30], 7.5);
 
             if(!is_bottom) {
-                br_interior_filleted_cube([103, 168, 3], r=28);
+                br_interior_filleted_cube([103, 168, 2], r=28);
             }
         }
 
@@ -289,7 +295,7 @@ module gb_base(is_bottom) {
 }
 
 // bottom half
-translate([55, 0, 27])
+translate([55, 0, 15])
 difference() {
     union() {
         gb_base(true);
@@ -308,17 +314,23 @@ difference() {
         *%translate([-105/2, -170/2, floor_z + 26])
             cube([105, 170, 1]);
 
-        translate([0, 9, -20.99])
+        *translate([0, 9, -20.99])
             back_button_holder();
 
         // on-off holder
-        translate([-50.5, -4, -9.5]) cube([6, 2, 7]);
-        translate([-50.5, 11, -9.5]) cube([6, 2, 7]);
-        translate([-44.5, 13, -9.5]) rotate(90, [1,0,0]) cube([2, 7, 3]);
-        translate([-44.5, -4, -2.5]) rotate(270, [1,0,0]) cube([2, 7, 3]);
-        translate([-50, -4, floor_z]) cube([1, 17, 3.51]);
-        translate([-47, -4, floor_z]) cube([1, 17, 3.51]);
-        translate([-44, -4, floor_z]) cube([1, 17, 3.5]);
+        translate([-50.5, -4.5, -9.5]) cube([5.5, 2, 7]);
+        translate([-50.5, 11.5, -9.5]) cube([5.5, 2, 7]);
+        translate([-50, -4.5, floor_z]) cube([1, 18, 3.51]);
+        translate([-48, -4.5, floor_z]) cube([1, 18, 3.51]);
+        translate([-46, -4.5, floor_z]) cube([1, 18, 3.5]);
+        *translate([-44.5, 13, -9.5]) rotate(90, [1,0,0]) cube([2, 7, 3]);
+        *translate([-44.5, -4, -2.5]) rotate(270, [1,0,0]) cube([2, 7, 3]);
+
+        // back-button holder door
+        translate([2, 3, floor_z + 1]) cube([1.5, 4, 2], center=true);
+        translate([-2, 3, floor_z + 1]) cube([1.5, 4, 2], center=true);
+        translate([2, 15, floor_z + 1]) cube([1.5, 4, 2], center=true);
+        translate([-2, 15, floor_z + 1]) cube([1.5, 4, 2], center=true);
 
         // buttons & holders
         union() {
@@ -347,16 +359,12 @@ difference() {
                 cube([16, 12, 1.5]);
             *translate([22, -36, floor_z])
                 #cube([28, 12, 1.5]);
-            translate([21, -36, floor_z])
-                cube([1, 12, 4]);
 
             // audio jack stand (originally 2 mm from floor)
             translate([26, 71, floor_z])
                 cube([8, 10, 1]);
             *translate([26, 69, floor_z])
                 #cube([8, 14, 1]);
-            translate([26, 68, floor_z])
-                cube([8, 1, 4]);
 
             // regulator stand
             translate([-27, -43, floor_z])
@@ -386,7 +394,7 @@ difference() {
     translate([30, 170 / 2 + .5, floor_z + 5])
         audio_jack();
 
-    // m3 bolts 
+    // m3 bolts
     union() {
         bolt(size=3, x=-46, y=79);
         bolt(size=3, x=46, y=79);
@@ -395,7 +403,7 @@ difference() {
     }
 
     // m2.5 bolts 
-    union() {            
+    union() {
         bolt(size=2.5, x=rpi_base_x + 3.5, y=rpi_base_y + 3.5);
         bolt(size=2.5, x=rpi_base_x + 3.5, y=rpi_base_y - 3.5 + rpi_h);
         bolt(size=2.5, x=rpi_base_x - 3.5 + rpi_w, y=rpi_base_y + 3.5);
@@ -415,12 +423,12 @@ difference() {
         translate([-button_holder_x_offset, -10, floor_z])
         rotate(-30, [0, 0, 1])
         union() {
-            translate([7.5, 0, 0]) cylinder(d=13, h=2);
-            translate([-7.5, 0, 0]) cylinder(d=13, h=2);
+            translate([a_b_button_half_distance, 0, 0]) cylinder(d=14, h=2);
+            translate([-a_b_button_half_distance, 0, 0]) cylinder(d=14, h=2);
         }
 
         // dpad
-        translate([button_holder_x_offset, -10, floor_z]) cylinder(d=28, h=2);
+        translate([button_holder_x_offset, -10, floor_z]) cylinder(d=29, h=2);
 
         // start-select
         translate([0, -48, floor_z + 1.5]) cube([22, 1, 3], center=true);
@@ -442,24 +450,24 @@ difference() {
         union() {
             scale([1, 1, 2])
             translate([-button_holder_x_offset, y, floor_z + button_holder_total_height - 6.5])
-                #button_dpad();
+                #button_dpad(big=true);
 
             scale([1, 1, 2])
             translate([button_holder_x_offset, y, floor_z + button_holder_total_height - 6.5])
-                #button_a_b();
+                #button_a_b(big=true);
 
             translate([0, y - 33, floor_z + button_holder_total_height])
                 #button_start_select();
         }
 
-        translate([-27, -20, -14.5])
+        translate([-27, -20, -14])
             #text_3dbackfacing("B", .4);
-        translate([-39, -12, -14.5])
+        translate([-39, -12, -14])
             #text_3dbackfacing("A", .4);
-        translate([9, -49, -14.5])
-            #text_3dbackfacing("START", .3);
-        translate([-9, -49, -14.5])
-            #text_3dbackfacing("SELECT", .3);
+        translate([11, -49, -14])
+            #text_3dbackfacing("START", .4);
+        translate([-11, -49, -14])
+            #text_3dbackfacing("SELECT", .4);
     }
 
     // screen hole
@@ -491,3 +499,5 @@ difference() {
 
 translate([-15, 95, 5]) rotate(270, [1, 0, 0]) back_button();
 translate([15, 95, 5]) rotate(270, [1, 0, 0]) back_button();
+
+translate([0, -95, 5]) back_button_holder();
