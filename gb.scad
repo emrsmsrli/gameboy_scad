@@ -431,7 +431,7 @@ difference() {
 
 // top half
 translate([-55, 0, 15])
-!difference() {
+difference() {
     union() {
         mirror([1, 0, 0])
             gb_base(false);
