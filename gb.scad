@@ -135,7 +135,7 @@ module button_a_b(big=false) {
         *%translate([dir * a_b_button_half_distance, 0, 2]) cylinder(d=6, h=4);
         translate([dir * a_b_button_half_distance, 0, 3])
         union() {
-            cylinder(d=11 + (big?1:0), h=5);
+            cylinder(d=11 + (big?.5:0), h=5);
             rotate(-30, [0, 0, 1])
             translate([-a_b_button_half_distance, big?-1.5:-1])
                 cube([a_b_button_half_distance*2, big?3:2, 1]);
@@ -201,10 +201,28 @@ module bolt_stand(h, d, x=0, y=0) {
         cylinder(h=h + .01, d=d + 2);
 }
 
-module front_bolt_stand(x=0, y=0) {
-    difference() {
-        bolt_stand(h=24, d=4, x=x, y=y);
-        #translate([x, y, 13]) screw(screwsize=3, screwlen=26, headlen=2, countersunk=false);
+module front_bolt_stand(x=0, y=0, with_sup=false) {
+    module sup() {
+        union() {
+            translate([0, 5, floor_z])
+            rotate(270, [0, 0, 1])
+                prismoid(size1=[5,3], size2=[0, 3], shift=[2.5, 0], h=10);
+            translate([0, -5, floor_z])
+            rotate(90, [0, 0, 1])
+                prismoid(size1=[5,3], size2=[0, 3], shift=[2.5, 0], h=10);
+        }
+    }
+
+    union() {
+        difference() {
+            bolt_stand(h=24, d=4, x=x, y=y);
+            #translate([x, y, 13]) screw(screwsize=3, screwlen=26, headlen=2, countersunk=false);
+        }
+
+        if(with_sup) {
+            translate([x, y]) sup();
+            translate([x, y]) rotate(90, [0, 0, 1]) sup();
+        }
     }
 }
 
@@ -266,10 +284,10 @@ module back_button_holder() {
         translate([-12, 0, -.5]) push_button_socket();
 
         translate([-1, 1, -3.5]) cube([2, 3, 13]);
-        translate([-1, 4, 8]) cube([2, 2, 1.5]);
+        translate([-1, 4, 8]) cube([2, 3, 1.5]);
 
         translate([-1, -4, -3.5]) cube([2, 3, 13]);
-        translate([-1, -6, 8]) cube([2, 2, 1.5]);
+        translate([-1, -5, 8]) cube([2, 2, 1.5]);
     }
 }
 
@@ -411,10 +429,9 @@ difference() {
     }
 }
 
-
 // top half
 translate([-55, 0, 15])
-difference() {
+!difference() {
     union() {
         mirror([1, 0, 0])
             gb_base(false);
@@ -423,12 +440,12 @@ difference() {
         translate([-button_holder_x_offset, -10, floor_z])
         rotate(-30, [0, 0, 1])
         union() {
-            translate([a_b_button_half_distance, 0, 0]) cylinder(d=14, h=2);
-            translate([-a_b_button_half_distance, 0, 0]) cylinder(d=14, h=2);
+            translate([a_b_button_half_distance, 0, 0]) cylinder(d=13.5, h=1);
+            translate([-a_b_button_half_distance, 0, 0]) cylinder(d=13.5, h=1);
         }
 
         // dpad
-        translate([button_holder_x_offset, -10, floor_z]) cylinder(d=29, h=2);
+        translate([button_holder_x_offset, -10, floor_z]) cylinder(d=29, h=1);
 
         // start-select
         translate([0, -48, floor_z + 1.5]) cube([22, 1, 3], center=true);
@@ -438,8 +455,18 @@ difference() {
         union() {
             front_bolt_stand(x=-46, y=79);
             front_bolt_stand(x=46, y=79);
-            mirror([1, 0, 0]) front_bolt_stand(x=-40, y=-50);
-            mirror([1, 0, 0]) front_bolt_stand(x=40, y=-55);
+            mirror([1, 0, 0]) front_bolt_stand(x=-40, y=-50, with_sup=true);
+            mirror([1, 0, 0]) front_bolt_stand(x=40, y=-55, with_sup=true);
+            
+            // supports
+            translate([-46, 82, floor_z+5])
+                cube([2,2,10], center=true);
+            translate([-50, 78.5, floor_z+5])
+                cube([3,2,10], center=true);
+            translate([46, 82, floor_z+5])
+                cube([2,2,10], center=true);
+            translate([50, 78.5, floor_z+5])
+                cube([3,2,10], center=true);
         }
     }
 
@@ -449,7 +476,7 @@ difference() {
         rotate(180, [0, 1, 0])
         union() {
             scale([1, 1, 2])
-            translate([-button_holder_x_offset, y, floor_z + button_holder_total_height - 6.5])
+            translate([-button_holder_x_offset, y, floor_z + button_holder_total_height - 6])
                 #button_dpad(big=true);
 
             scale([1, 1, 2])
