@@ -19,8 +19,8 @@ $fn = 20;
 floor_z = -13.01;
 screw_z = -14;
 
-rpi_base_x = -44.5;
-rpi_base_y = 19;
+rpi_base_x = -45;
+rpi_base_y = 19.5;
 rpi_h = 56;
 rpi_w = 65;
 
