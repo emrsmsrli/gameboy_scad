@@ -5,5 +5,8 @@ The model also features custom back buttons that emulate Gameboy Advance LR butt
 Used by the awesome [gameboi](https://github.com/emrsmsrli/gameboi) and [gameboiadvance](https://github.com/emrsmsrli/gameboiadvance) projects.
 
 <p align="center">
-    <img src="screenshots/viewport.jpg" width=750 />
+    <img src="screenshots/viewport.png" width=750 />
+</p>
+<p align="center">
+    <img src="screenshots/viewport_rendered.png" width=750 />
 </p>
